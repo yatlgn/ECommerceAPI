@@ -18,10 +18,10 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Login
     {
         private readonly UserManager<Domain.Entities.User> userManager;
         private readonly AuthRules authRules;
-        private readonly RoleManager<Role> roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> roleManager;
         private readonly ITokenService tokenService;
         private readonly IConfiguration configuration;
-        public LoginCommandHandler(UserManager<Domain.Entities.User> userManager, IConfiguration configuration, ITokenService tokenService, RoleManager<Role> roleManager, AuthRules authRules, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+        public LoginCommandHandler(UserManager<Domain.Entities.User> userManager, IConfiguration configuration, ITokenService tokenService, RoleManager<IdentityRole<Guid>> roleManager, AuthRules authRules, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
             : base(mapper, unitOfWork, httpContextAccessor)
         {
             this.userManager = userManager;

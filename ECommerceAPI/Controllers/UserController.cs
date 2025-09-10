@@ -1,49 +1,35 @@
-﻿using ECommerceAPI.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
+﻿using ECommerceAPI.Application.Features.Auth.Command.AssignRole;
+using ECommerceAPI.Application.Features.Auth.Queries;
+using ECommerceAPI.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ECommerceAPI.API.Controllers
+
+
+[Route("ECommerceAPI/[controller]/[action]")]
+[ApiController]
+
+public class UserController : ControllerBase
 {
-    [Route("ECommerceAPI/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public UserController(IMediator mediator)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
+        _mediator = mediator;
+    }
 
-        public UserController(UserManager<User> userManager, RoleManager<Role> roleManager)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-        }
+    [HttpPost("{userId}/assign-role")]
+    public async Task<IActionResult> AssignRole(string userId, [FromQuery] string roleName)
+    {
+        var result = await _mediator.Send(new AssignRoleCommandRequest { UserId = userId, RoleName = roleName });
+        return Ok(result);
+    }
 
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var userIdClaim = User?.Claims.FirstOrDefault(c => c.Type == "sub")?.Value
-                              ?? User?.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-
-            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
-
-            if (!Guid.TryParse(userIdClaim, out Guid userId)) return Unauthorized();
-
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user == null) return NotFound("User not found.");
-
-            return Ok(new
-            {
-                user.UserName,
-                user.Email,
-                user.Surname,
-                user.PhoneNumber,
-                BirthDate = user.BirthDate?.ToString("yyyy-MM-dd"),
-                user.Gender
-            });
-        }
+    [HttpGet("{userId}/roles")]
+    public async Task<IActionResult> GetUserRoles(string userId)
+    {
+        var roles = await _mediator.Send(new GetUserRolesQuery { UserId = userId });
+        return Ok(roles);
     }
 }

@@ -12,7 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ECommerceAPI.API.Controllers
+namespace ECommerceAPI.Controllers
 {
     [Route("ECommerceAPI/[controller]/[action]")]
     [ApiController]
@@ -66,22 +66,17 @@ namespace ECommerceAPI.API.Controllers
             return Ok(new { Message = "All tokens have been successfully canceled." });
         }
 
-        // -----------------------------
-        // Google Login Endpoint
-        // -----------------------------
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> GoogleLogin([FromBody] string idToken)
         {
             try
             {
-                // Google token doğrulama
+              
                 var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
-
-                // Kullanıcıyı veritabanında kontrol et, yoksa ekle (opsiyonel)
                 var email = payload.Email;
 
-                // JWT oluştur
+               
                 var jwt = GenerateJwtToken(email);
 
                 return Ok(new

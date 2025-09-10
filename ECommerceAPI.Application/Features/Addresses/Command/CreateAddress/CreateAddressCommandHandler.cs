@@ -1,6 +1,6 @@
 ﻿using ECommerceAPI.Application.Bases;
 using ECommerceAPI.Application.Interfaces.UnitOfWorks;
-using ECommerceAPI.Domain.Entities; // Mevcut Address entity’si buradan
+using ECommerceAPI.Domain.Entities; 
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Threading;
@@ -15,6 +15,9 @@ namespace ECommerceAPI.Application.Features.Addresses.Command.CreateAddress
 
         public async Task<Unit> Handle(CreateAddressCommandRequest request, CancellationToken cancellationToken)
         {
+            if (UserId == Guid.Empty)
+                throw new Exception("UserId not found in token.");
+
             var address = new Address
             {
                 UserId = UserId,
@@ -30,4 +33,5 @@ namespace ECommerceAPI.Application.Features.Addresses.Command.CreateAddress
             return Unit.Value;
         }
     }
+
 }

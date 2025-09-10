@@ -17,12 +17,12 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Register
     {
         private readonly AuthRules authRules;
         private readonly UserManager<User> userManager;
-        private readonly RoleManager<Role> roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> roleManager;
 
         public RegisterCommandHandler(
             AuthRules authRules,
             UserManager<User> userManager,
-            RoleManager<Role> roleManager,
+            RoleManager<IdentityRole<Guid>> roleManager,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor
@@ -87,7 +87,7 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Register
                 // Rol kontrol ve ekleme
                 if (!await roleManager.RoleExistsAsync("user"))
                 {
-                    await roleManager.CreateAsync(new Role
+                    await roleManager.CreateAsync(new IdentityRole<Guid>
                     {
                         Name = "user",
                         NormalizedName = "USER",

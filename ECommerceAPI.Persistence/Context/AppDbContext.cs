@@ -6,12 +6,13 @@ using System;
 
 namespace ECommerceAPI.Persistence.Context
 {
-    public class AppDbContext : IdentityDbContext<User, Role, Guid>
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -25,12 +26,50 @@ namespace ECommerceAPI.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Roles)
-                .WithMany(r => r.Users)
-                .UsingEntity(j => j.ToTable("UserRoles"));
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<OrderProduct>()
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id = 1, CategoryName = "Electronics" },
+                new Category { Id = 2, CategoryName = "Clothing" },
+                new Category { Id = 3, CategoryName = "Books" },
+                new Category { Id = 4, CategoryName = "Home & Kitchen" },
+                new Category { Id = 5, CategoryName = "Toys" },
+                new Category { Id = 6, CategoryName = "Sports" },
+                new Category { Id = 7, CategoryName = "Beauty" }
+            );
+
+            modelBuilder.Entity<SubCategory>().HasData(
+        new SubCategory { Id = 1, SubCategoryName = "Laptops", CategoryId = 1 },
+        new SubCategory { Id = 2, SubCategoryName = "Phones", CategoryId = 1 },
+        new SubCategory { Id = 3, SubCategoryName = "Cameras", CategoryId = 1 },
+
+        new SubCategory { Id = 4, SubCategoryName = "Men", CategoryId = 2 },
+        new SubCategory { Id = 5, SubCategoryName = "Women", CategoryId = 2 },
+        new SubCategory { Id = 6, SubCategoryName = "Accessories", CategoryId = 2 },
+
+        new SubCategory { Id = 7, SubCategoryName = "Fiction", CategoryId = 3 },
+        new SubCategory { Id = 8, SubCategoryName = "Non-Fiction", CategoryId = 3 },
+        new SubCategory { Id = 9, SubCategoryName = "Comics", CategoryId = 3 },
+
+        new SubCategory { Id = 10, SubCategoryName = "Furniture", CategoryId = 4 },
+        new SubCategory { Id = 11, SubCategoryName = "Kitchen", CategoryId = 4 },
+        new SubCategory { Id = 12, SubCategoryName = "Decor", CategoryId = 4 },
+
+        new SubCategory { Id = 13, SubCategoryName = "Action Figures", CategoryId = 5 },
+        new SubCategory { Id = 14, SubCategoryName = "Puzzles", CategoryId = 5 },
+        new SubCategory { Id = 15, SubCategoryName = "Board Games", CategoryId = 5 },
+
+        new SubCategory { Id = 16, SubCategoryName = "Fitness", CategoryId = 6 },
+        new SubCategory { Id = 17, SubCategoryName = "Outdoor", CategoryId = 6 },
+        new SubCategory { Id = 18, SubCategoryName = "Team Sports", CategoryId = 6 },
+
+        new SubCategory { Id = 19, SubCategoryName = "Skincare", CategoryId = 7 },
+        new SubCategory { Id = 20, SubCategoryName = "Makeup", CategoryId = 7 },
+        new SubCategory { Id = 21, SubCategoryName = "Haircare", CategoryId = 7 }
+    );
+        
+
+        modelBuilder.Entity<OrderProduct>()
                 .HasKey(op => new { op.OrderId, op.ProductId });
 
             modelBuilder.Entity<OrderProduct>()

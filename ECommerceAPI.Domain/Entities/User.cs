@@ -16,7 +16,6 @@ namespace ECommerceAPI.Domain.Entities
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public ICollection<Role> Roles { get; set; } = new List<Role>();
         public ICollection<Basket> Baskets { get; set; } = new List<Basket>();
         public ICollection<GoogleAuth> GoogleAuths { get; set; } = new List<GoogleAuth>();
     }

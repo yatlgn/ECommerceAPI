@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ECommerceAPI.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250905090225_AddIdentity")]
-    partial class AddIdentity
+    [Migration("20250910184324_AddDefaultCategoriesAndSubCategories")]
+    partial class AddDefaultCategoriesAndSubCategories
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -128,32 +128,43 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
 
-            modelBuilder.Entity("ECommerceAPI.Domain.Entities.GoogleAuth", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("GoogleId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("GoogleAuths");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryName = "Electronics"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryName = "Clothing"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryName = "Books"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryName = "Home & Kitchen"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryName = "Toys"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryName = "Sports"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryName = "Beauty"
+                        });
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Order", b =>
@@ -237,44 +248,166 @@ namespace ECommerceAPI.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("SubCategoryId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("SubCategoryId");
+
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ECommerceAPI.Domain.Entities.Role", b =>
+            modelBuilder.Entity("ECommerceAPI.Domain.Entities.SubCategory", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SubCategoryName")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("SubCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            SubCategoryName = "Laptops"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            SubCategoryName = "Phones"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 1,
+                            SubCategoryName = "Cameras"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 2,
+                            SubCategoryName = "Men"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 2,
+                            SubCategoryName = "Women"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 2,
+                            SubCategoryName = "Accessories"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 3,
+                            SubCategoryName = "Fiction"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 3,
+                            SubCategoryName = "Non-Fiction"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 3,
+                            SubCategoryName = "Comics"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 4,
+                            SubCategoryName = "Furniture"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 4,
+                            SubCategoryName = "Kitchen"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 4,
+                            SubCategoryName = "Decor"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CategoryId = 5,
+                            SubCategoryName = "Action Figures"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CategoryId = 5,
+                            SubCategoryName = "Puzzles"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CategoryId = 5,
+                            SubCategoryName = "Board Games"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CategoryId = 6,
+                            SubCategoryName = "Fitness"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CategoryId = 6,
+                            SubCategoryName = "Outdoor"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CategoryId = 6,
+                            SubCategoryName = "Team Sports"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CategoryId = 7,
+                            SubCategoryName = "Skincare"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CategoryId = 7,
+                            SubCategoryName = "Makeup"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CategoryId = 7,
+                            SubCategoryName = "Haircare"
+                        });
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Token", b =>
@@ -311,6 +444,9 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -321,6 +457,9 @@ namespace ECommerceAPI.Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -354,6 +493,9 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<string>("Surname")
+                        .HasColumnType("text");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -371,6 +513,58 @@ namespace ECommerceAPI.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("GoogleAuth", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("GoogleIdToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GoogleAuths");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -476,21 +670,6 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.Property<Guid>("RolesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("RolesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("UserRoles", (string)null);
-                });
-
             modelBuilder.Entity("BasketProduct", b =>
                 {
                     b.HasOne("ECommerceAPI.Domain.Entities.Basket", null)
@@ -532,17 +711,6 @@ namespace ECommerceAPI.Persistence.Migrations
                 {
                     b.HasOne("ECommerceAPI.Domain.Entities.User", "User")
                         .WithMany("Baskets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ECommerceAPI.Domain.Entities.GoogleAuth", b =>
-                {
-                    b.HasOne("ECommerceAPI.Domain.Entities.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -599,6 +767,23 @@ namespace ECommerceAPI.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ECommerceAPI.Domain.Entities.SubCategory", "SubCategory")
+                        .WithMany("Products")
+                        .HasForeignKey("SubCategoryId");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("SubCategory");
+                });
+
+            modelBuilder.Entity("ECommerceAPI.Domain.Entities.SubCategory", b =>
+                {
+                    b.HasOne("ECommerceAPI.Domain.Entities.Category", "Category")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
                 });
 
@@ -613,9 +798,20 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("GoogleAuth", b =>
+                {
+                    b.HasOne("ECommerceAPI.Domain.Entities.User", "User")
+                        .WithMany("GoogleAuths")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("ECommerceAPI.Domain.Entities.Role", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -642,7 +838,7 @@ namespace ECommerceAPI.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("ECommerceAPI.Domain.Entities.Role", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -664,24 +860,11 @@ namespace ECommerceAPI.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.HasOne("ECommerceAPI.Domain.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ECommerceAPI.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Order", b =>
@@ -694,11 +877,18 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.Navigation("OrderProducts");
                 });
 
+            modelBuilder.Entity("ECommerceAPI.Domain.Entities.SubCategory", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.User", b =>
                 {
                     b.Navigation("Addresses");
 
                     b.Navigation("Baskets");
+
+                    b.Navigation("GoogleAuths");
 
                     b.Navigation("Orders");
 

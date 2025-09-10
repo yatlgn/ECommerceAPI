@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerceAPI.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Domain.Entities
 {
-    public class Product
+    public class Product : IEntityBase
     {
         public int Id { get; set; }
         public string ProductName { get; set; } 
@@ -17,5 +18,7 @@ namespace ECommerceAPI.Domain.Entities
 
         public ICollection<Basket> Baskets { get; set; } = new List<Basket>();
         public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public int? SubCategoryId { get; set; }
+        public SubCategory SubCategory { get; set; }
     }
 }

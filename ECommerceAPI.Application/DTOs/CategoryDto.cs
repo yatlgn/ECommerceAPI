@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.DTOs
 {
-    public class CategoryCreateDto
-    {
-        public string Name { get; set; }
-    }
-
     public class CategoryDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public List<SubCategoryDto> SubCategories { get; set; }
     }
+
+    public class SubCategoryDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
 
 }
