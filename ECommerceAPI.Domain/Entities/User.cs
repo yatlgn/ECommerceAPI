@@ -7,9 +7,9 @@ namespace ECommerceAPI.Domain.Entities
     public class User : IdentityUser<Guid>
     {
 
-        public string? Surname { get; set; }
+        public string? UserSurname { get; set; }
         public DateTime? BirthDate { get; set; }
-        public string? Gender { get; set; } 
+        public string? Gender { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; } = DateTime.UtcNow;
 

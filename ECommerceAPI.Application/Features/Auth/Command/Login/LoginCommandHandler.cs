@@ -70,8 +70,7 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Login
 
             return new LoginCommandResponse
             {
-                Name = user.UserName,
-                Surname = user.UserName,
+
                 Email = user.Email,
                 Token = _token,
                 RefreshToken = refreshToken,

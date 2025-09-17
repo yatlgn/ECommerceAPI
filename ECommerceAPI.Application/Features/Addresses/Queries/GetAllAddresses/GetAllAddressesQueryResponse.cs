@@ -8,7 +8,7 @@ namespace ECommerceAPI.Application.Features.Addresses.Queries.GetAllAddresses
         public string Street { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Country { get; set; } = null!;
-        public int UserId { get; set; } 
+        public Guid UserId { get; set; } 
         public DateTime CreatedAt { get; set; } 
     }
 }

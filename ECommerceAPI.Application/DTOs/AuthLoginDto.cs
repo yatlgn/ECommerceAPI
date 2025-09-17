@@ -18,9 +18,5 @@ public class AuthLoginDto
         public string PhoneNumber { get; set; }
     }
 
-public class AuthResponseDto
-{
-    public UserDto User { get; set; }
-    public TokenDto Token { get; set; }
-}
+
 }

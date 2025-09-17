@@ -37,14 +37,12 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Register
         {
             try
             {
-                // Email üzerinden var mı kontrol
                 var existingUser = await userManager.FindByEmailAsync(request.Email);
                 await authRules.UserShouldNotBeExist(existingUser);
 
                 if (request.Password != request.ConfirmPassword)
                     throw new Exception("Passwords do not match.");
 
-                // UserName üretimi
                 string generatedUserName;
                 if (!string.IsNullOrWhiteSpace(request.UserName))
                 {
@@ -59,11 +57,11 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Register
                     generatedUserName = Guid.NewGuid().ToString("N");
                 }
 
-                // User objesi oluşturuluyor, tüm DateTime alanları UTC
+ 
                 User user = new User
                 {
-                    UserName = generatedUserName,
-                    Surname = request.Surname,
+                    UserName = request.UserName,
+                    UserSurname = request.Surname,
                     Email = request.Email,
                     PhoneNumber = request.PhoneNumber,
                     BirthDate = request.BirthDate.HasValue
@@ -72,10 +70,10 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Register
                     Gender = request.Gender,
                     NormalizedEmail = request.Email?.ToUpper(),
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7) // Örnek token süresi
+                    NormalizedUserName = request.Email?.ToUpper(),
+
                 };
 
-                // User creation
                 IdentityResult result = await userManager.CreateAsync(user, request.Password);
 
                 if (!result.Succeeded)
@@ -84,7 +82,6 @@ namespace ECommerceAPI.Application.Features.Auth.Command.Register
                     throw new Exception($"User creation failed: {errors}");
                 }
 
-                // Rol kontrol ve ekleme
                 if (!await roleManager.RoleExistsAsync("user"))
                 {
                     await roleManager.CreateAsync(new IdentityRole<Guid>

@@ -23,9 +23,9 @@ namespace ECommerceAPI.Application.Features.Auth.Rules
             return Task.CompletedTask;
 
         }
-        public Task RefreshTokenShouldNotBeExpired(DateTime? expiryDate)
+        public Task RefreshTokenShouldNotBeExpired(DateTime? RefreshTokenExpiryTime)
         {
-            if (expiryDate <= DateTime.UtcNow)
+            if (RefreshTokenExpiryTime <= DateTime.UtcNow)
                 throw new RefreshTokenShouldNotBeException();
 
             return Task.CompletedTask;

@@ -20,7 +20,7 @@ namespace ECommerceAPI.Application.Features.Auth.Queries
 
         public async Task<IList<string>> Handle(GetUserRolesQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId);
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
                 throw new Exception("User not found");
 

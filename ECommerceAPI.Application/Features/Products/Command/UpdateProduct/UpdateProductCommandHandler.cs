@@ -23,6 +23,8 @@ namespace ECommerceAPI.Application.Features.Products.Command.UpdateProduct
 
             product.ProductName = request.ProductName;
             product.Price = request.Price;
+            product.Description = request.Description;
+            product.ImageUrl = request.ImageUrl;
             product.CategoryId = request.CategoryId;
 
             await _unitOfWork.GetWriteRepository<Product>().UpdateAsync(product);

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ECommerceAPI.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,8 +19,6 @@ namespace ECommerceAPI.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    RefreshToken = table.Column<string>(type: "text", nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
@@ -35,7 +33,7 @@ namespace ECommerceAPI.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Surname = table.Column<string>(type: "text", nullable: true),
+                    UserSurname = table.Column<string>(type: "text", nullable: true),
                     BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Gender = table.Column<string>(type: "text", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
@@ -208,7 +206,7 @@ namespace ECommerceAPI.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RefreshToken = table.Column<string>(type: "text", nullable: false),
-                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -310,7 +308,7 @@ namespace ECommerceAPI.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AccessToken = table.Column<string>(type: "text", nullable: false),
-                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -319,30 +317,6 @@ namespace ECommerceAPI.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Tokens_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRoles",
-                columns: table => new
-                {
-                    RolesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRoles", x => new { x.RolesId, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_UserRoles_AspNetRoles_RolesId",
-                        column: x => x.RolesId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -376,8 +350,10 @@ namespace ECommerceAPI.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProductName = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: false),
-                    SubCategoryId = table.Column<int>(type: "integer", nullable: true)
+                    SubCategoryId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -392,7 +368,8 @@ namespace ECommerceAPI.Persistence.Migrations
                         name: "FK_Products_SubCategories_SubCategoryId",
                         column: x => x.SubCategoryId,
                         principalTable: "SubCategories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -456,6 +433,34 @@ namespace ECommerceAPI.Persistence.Migrations
                     { 5, "Toys" },
                     { 6, "Sports" },
                     { 7, "Beauty" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SubCategories",
+                columns: new[] { "Id", "CategoryId", "SubCategoryName" },
+                values: new object[,]
+                {
+                    { 1, 1, "Laptops" },
+                    { 2, 1, "Phones" },
+                    { 3, 1, "Cameras" },
+                    { 4, 2, "Men" },
+                    { 5, 2, "Women" },
+                    { 6, 2, "Accessories" },
+                    { 7, 3, "Fiction" },
+                    { 8, 3, "Non-Fiction" },
+                    { 9, 3, "Comics" },
+                    { 10, 4, "Furniture" },
+                    { 11, 4, "Kitchen" },
+                    { 12, 4, "Decor" },
+                    { 13, 5, "Action Figures" },
+                    { 14, 5, "Puzzles" },
+                    { 15, 5, "Board Games" },
+                    { 16, 6, "Fitness" },
+                    { 17, 6, "Outdoor" },
+                    { 18, 6, "Team Sports" },
+                    { 19, 7, "Skincare" },
+                    { 20, 7, "Makeup" },
+                    { 21, 7, "Haircare" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -554,11 +559,6 @@ namespace ECommerceAPI.Persistence.Migrations
                 name: "IX_Tokens_UserId",
                 table: "Tokens",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_UsersId",
-                table: "UserRoles",
-                column: "UsersId");
         }
 
         /// <inheritdoc />
@@ -601,7 +601,7 @@ namespace ECommerceAPI.Persistence.Migrations
                 name: "Tokens");
 
             migrationBuilder.DropTable(
-                name: "UserRoles");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Baskets");
@@ -611,9 +611,6 @@ namespace ECommerceAPI.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

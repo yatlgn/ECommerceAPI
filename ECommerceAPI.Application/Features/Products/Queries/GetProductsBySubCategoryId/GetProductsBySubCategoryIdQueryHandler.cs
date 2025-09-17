@@ -26,6 +26,8 @@ namespace ECommerceAPI.Application.Features.Products.Queries.GetProductsBySubCat
                 Id = p.Id,
                 Name = p.ProductName,
                 Price = p.Price,
+                Description = p.Description,
+                ImageUrl = p.ImageUrl,
                 CategoryName = p.Category.CategoryName,
                 SubCategoryName = p.SubCategory.SubCategoryName
             }).ToList();

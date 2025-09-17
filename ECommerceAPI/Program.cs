@@ -15,11 +15,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DbContext
+// ------------------- DbContext -------------------
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity
+// ------------------- Identity -------------------
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 {
     options.Password.RequireDigit = true;
@@ -30,7 +30,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// CORS
+// ------------------- CORS -------------------
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -41,22 +41,23 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Scoped Services
+// ------------------- Scoped Services -------------------
 builder.Services.AddScoped<AuthRules>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 
-// AutoMapper
-builder.Services.AddAutoMapper(typeof(Program));
+// ------------------- AutoMapper -------------------
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// MediatR
+
+// ------------------- MediatR -------------------
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblies(typeof(RegisterCommandHandler).Assembly);
 });
 
-// JWT Authentication
+// ------------------- JWT Authentication -------------------
 var tokenSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>();
 var key = Encoding.UTF8.GetBytes(tokenSettings.Secret);
 
@@ -78,26 +79,32 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// ------------------- Controllers & JSON -------------------
 builder.Services.AddControllers()
     .AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
     );
+
+// ------------------- Swagger -------------------
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
 
-// Swagger
+// ------------------- Swagger UI -------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Middleware
+// ------------------- Middleware -------------------
 app.UseHttpsRedirection();
 app.UseCors();
-app.UseAuthorization();
+
+app.UseAuthentication();
+app.UseAuthorization();  
 
 app.MapControllers();
 

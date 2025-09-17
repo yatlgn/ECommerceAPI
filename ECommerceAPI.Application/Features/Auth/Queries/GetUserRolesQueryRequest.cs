@@ -9,6 +9,6 @@ namespace ECommerceAPI.Application.Features.Auth.Queries
 {
     public class GetUserRolesQuery : IRequest<IList<string>>
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

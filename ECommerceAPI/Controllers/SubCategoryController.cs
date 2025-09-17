@@ -37,7 +37,7 @@ public class SubCategoriesController : ControllerBase
         return Ok(subCategory);
     }
 
-    [HttpGet("ByCategory/{categoryId}")]
+    [HttpGet("{categoryId}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetByCategoryId(int categoryId)
     {

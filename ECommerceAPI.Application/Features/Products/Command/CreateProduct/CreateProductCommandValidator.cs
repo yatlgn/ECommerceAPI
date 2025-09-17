@@ -21,6 +21,12 @@ namespace ECommerceAPI.Application.Features.Products.Commands
 
             RuleFor(x => x.CategoryId)
                 .GreaterThan(0).WithMessage("CategoryId must be greater than zero.");
+
+            RuleFor(x => x.SubCategoryId)
+                .GreaterThan(0).WithMessage("SubCategoryId must be greater than zero.");
+
+            RuleFor(x => x.Description)
+                .MaximumLength(1000);
         }
     }
 }

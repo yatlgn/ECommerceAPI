@@ -22,7 +22,7 @@ namespace ECommerceAPI.Application.Features.Auth.Command.AssignRole
 
         public async Task<string> Handle(AssignRoleCommandRequest request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId);
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
                 throw new Exception("User not found");
 

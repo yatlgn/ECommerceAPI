@@ -41,7 +41,7 @@ namespace ECommerceAPI.API.Controllers
             return Ok(product);
         }
 
-        [HttpGet("GetProductsByCategory/{categoryId}")]
+        [HttpGet("{categoryId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductsByCategory(int categoryId)
         {
@@ -49,7 +49,7 @@ namespace ECommerceAPI.API.Controllers
             return Ok(product);
         }
 
-        [HttpGet("GetProductsBySubCategory/{subcategoryId}")]
+        [HttpGet("{subcategoryId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductsBySubCategory(int subcategoryId)
         {
@@ -58,11 +58,11 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateProductCommandRequest request)
         {
-            await _mediator.Send(request);
-            return StatusCode(StatusCodes.Status201Created, "Product created successfully.");
+            var productDto = await _mediator.Send(request);
+            return CreatedAtAction(nameof(GetById), new { id = productDto.Id }, productDto);
         }
 
         [HttpPut("{id}")]
@@ -70,7 +70,7 @@ namespace ECommerceAPI.API.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] UpdateProductCommandRequest request)
         {
             if (id != request.Id) return BadRequest("Id mismatch.");
-            await _mediator.Send(request);
+           var updatedProduct = await _mediator.Send(request);
             return Ok("Product updated successfully.");
         }
 
@@ -79,7 +79,7 @@ namespace ECommerceAPI.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _mediator.Send(new DeleteProductCommandRequest { Id = id });
-            return Ok("Product deleted successfully.");
+            return Ok(new { Message = "Product deleted successfully", ProductId = id });
         }
     }
 

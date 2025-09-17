@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Features.Products.Command.CreateProduct;
+﻿using ECommerceAPI.Application.DTOs;
+using ECommerceAPI.Application.Features.Products.Command.CreateProduct;
 using ECommerceAPI.Application.Interfaces.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using MediatR;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.Features.Products.Commands
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest,Unit >
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest,ProductDto >
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -16,20 +17,35 @@ namespace ECommerceAPI.Application.Features.Products.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
+        public async Task<ProductDto> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
             var product = new Product
             {
                 ProductName = request.ProductName,
                 Price = request.Price,
-                CategoryId = request.CategoryId
+                Description = request.Description,
+                ImageUrl = request.ImageUrl,
+                CategoryId = request.CategoryId,
+                SubCategoryId = request.SubCategoryId
             };
 
             var productRepo = _unitOfWork.GetWriteRepository<Product>();
             await productRepo.AddAsync(product);
             await _unitOfWork.SaveAsync();
 
-            return Unit.Value;
+            var productDto = new ProductDto
+            {
+                Id = product.Id,
+                Name = product.ProductName,
+                Price = product.Price,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                CategoryId = product.CategoryId,
+                SubCategoryId = product.SubCategoryId
+            };
+            ;
+
+            return productDto;
         }
     }
 }

@@ -6,6 +6,6 @@ namespace ECommerceAPI.Application.Features.Addresses.Queries.GetAllAddresses
     public class GetAllAddressesQueryRequest : IRequest<IList<GetAllAddressesQueryResponse>>
     {
       
-         public int UserId { get; set; }
+         public Guid UserId { get; set; }
     }
 }

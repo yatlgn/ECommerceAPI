@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Application.DTOs
 {
-    public class AddressCreateDto
-    {
-        public string City { get; set; }
-        public string Street { get; set; }
-        public Guid UserId { get; set; }
-    }
-
     public class AddressDto
     {
         public int Id { get; set; }

@@ -1,35 +1,55 @@
-﻿using ECommerceAPI.Application.Features.Auth.Command.AssignRole;
-using ECommerceAPI.Application.Features.Auth.Queries;
-using ECommerceAPI.Domain.Entities;
+﻿using ECommerceAPI.Application.DTOs;
+using ECommerceAPI.Application.Features.Users.Command.DeleteUser;
+using ECommerceAPI.Application.Features.Users.Command.UpdateUser;
+using ECommerceAPI.Application.Features.Users.Queries.GetUserById;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-
-
-[Route("ECommerceAPI/[controller]/[action]")]
-[ApiController]
-
-public class UserController : ControllerBase
+namespace ECommerceAPI.Controllers
 {
-    private readonly IMediator _mediator;
-
-    public UserController(IMediator mediator)
+    [Route("ECommerceAPI/[controller]")]
+    [ApiController]
+    public class UsersController : ControllerBase
     {
-        _mediator = mediator;
-    }
+        private readonly IMediator _mediator;
 
-    [HttpPost("{userId}/assign-role")]
-    public async Task<IActionResult> AssignRole(string userId, [FromQuery] string roleName)
-    {
-        var result = await _mediator.Send(new AssignRoleCommandRequest { UserId = userId, RoleName = roleName });
-        return Ok(result);
-    }
+        public UsersController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
 
-    [HttpGet("{userId}/roles")]
-    public async Task<IActionResult> GetUserRoles(string userId)
-    {
-        var roles = await _mediator.Send(new GetUserRolesQuery { UserId = userId });
-        return Ok(roles);
+
+
+
+        [HttpPut("Update")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Update([FromBody] UpdateUserCommandRequest request)
+        {
+            if(request.UserId == Guid.Empty)
+                return BadRequest("UserId is required for anonymous update.");
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _mediator.Send(new DeleteUserCommandRequest { UserId = id });
+            return Ok("User deleted successfully");
+        }
+     
+
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+    
+            var result = await _mediator.Send(new GetUserByIdRequest { Id = id });
+            if (result == null) return NotFound("User not found.");
+            return Ok(result);
+        }
     }
 }

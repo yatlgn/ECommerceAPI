@@ -12,7 +12,7 @@ namespace ECommerceAPI.Domain.Entities
     {
         public int Id { get; set; }
         public string RefreshToken { get; set; } 
-        public DateTime ExpiryDate { get; set; } = DateTime.UtcNow;
+        public DateTime RefreshTokenExpiryTime { get; set; } = DateTime.UtcNow;
 
         public Guid UserId { get; set; }
         public User User { get; set; }
