@@ -102,14 +102,22 @@ namespace ECommerceAPI.Persistence.Context
                 .WithMany(u => u.Payments)
                 .HasForeignKey(p => p.UserId);
 
+            modelBuilder.Entity<BasketProduct>()
+    .HasKey(bp => new { bp.BasketId, bp.ProductId });
+
+            modelBuilder.Entity<BasketProduct>()
+                .HasOne(bp => bp.Basket)
+                .WithMany(b => b.BasketProducts)
+                .HasForeignKey(bp => bp.BasketId);
+
+            modelBuilder.Entity<BasketProduct>()
+                .HasOne(bp => bp.Product)
+                .WithMany(p => p.BasketProducts)
+                .HasForeignKey(bp => bp.ProductId);
+
             modelBuilder.Entity<Basket>()
                 .HasOne(b => b.User)
                 .WithMany(u => u.Baskets);
-
-            modelBuilder.Entity<Product>()
-                .HasMany(p => p.Baskets)
-                .WithMany(b => b.Products)
-                .UsingEntity(j => j.ToTable("BasketProducts"));
 
             modelBuilder.Entity<Auth>()
                 .HasOne(a => a.User)

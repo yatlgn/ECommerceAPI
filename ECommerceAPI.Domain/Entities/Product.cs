@@ -19,7 +19,7 @@ namespace ECommerceAPI.Domain.Entities
         public int SubCategoryId { get; set; }
         public SubCategory SubCategory { get; set; }
 
-        public ICollection<Basket> Baskets { get; set; } = new List<Basket>();
+        public ICollection<BasketProduct> BasketProducts { get; set; } = new List<BasketProduct>();
         public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
     }

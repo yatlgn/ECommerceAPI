@@ -373,24 +373,25 @@ namespace ECommerceAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BasketProducts",
+                name: "BasketProduct",
                 columns: table => new
                 {
-                    BasketsId = table.Column<int>(type: "integer", nullable: false),
-                    ProductsId = table.Column<int>(type: "integer", nullable: false)
+                    BasketId = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BasketProducts", x => new { x.BasketsId, x.ProductsId });
+                    table.PrimaryKey("PK_BasketProduct", x => new { x.BasketId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_BasketProducts_Baskets_BasketsId",
-                        column: x => x.BasketsId,
+                        name: "FK_BasketProduct_Baskets_BasketId",
+                        column: x => x.BasketId,
                         principalTable: "Baskets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BasketProducts_Products_ProductsId",
-                        column: x => x.ProductsId,
+                        name: "FK_BasketProduct_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -511,9 +512,9 @@ namespace ECommerceAPI.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BasketProducts_ProductsId",
-                table: "BasketProducts",
-                column: "ProductsId");
+                name: "IX_BasketProduct_ProductId",
+                table: "BasketProduct",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Baskets_UserId",
@@ -586,7 +587,7 @@ namespace ECommerceAPI.Persistence.Migrations
                 name: "Auths");
 
             migrationBuilder.DropTable(
-                name: "BasketProducts");
+                name: "BasketProduct");
 
             migrationBuilder.DropTable(
                 name: "GoogleAuths");

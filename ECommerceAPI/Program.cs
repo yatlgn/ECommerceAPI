@@ -1,11 +1,13 @@
 using ECommerceAPI.Application.Features.Auth.Command.Register;
 using ECommerceAPI.Application.Features.Auth.Rules;
+using ECommerceAPI.Application.Interfaces.Repositories;
 using ECommerceAPI.Application.Interfaces.Tokens;
 using ECommerceAPI.Application.Interfaces.UnitOfWorks;
 using ECommerceAPI.Domain.Entities;
 using ECommerceAPI.Infrastructure.Persistence;
 using ECommerceAPI.Infrastructure.Tokens;
 using ECommerceAPI.Persistence.Context;
+using ECommerceAPI.Persistence.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -47,9 +49,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 
+// ------------------- Repository Registration -------------------
+builder.Services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+builder.Services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+
 // ------------------- AutoMapper -------------------
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 
 // ------------------- MediatR -------------------
 builder.Services.AddMediatR(cfg =>
@@ -68,13 +73,13 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
         NameClaimType = "sub"
     };
 });
@@ -89,7 +94,6 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 var app = builder.Build();
 
 // ------------------- Swagger UI -------------------
@@ -102,9 +106,8 @@ if (app.Environment.IsDevelopment())
 // ------------------- Middleware -------------------
 app.UseHttpsRedirection();
 app.UseCors();
-
 app.UseAuthentication();
-app.UseAuthorization();  
+app.UseAuthorization();
 
 app.MapControllers();
 

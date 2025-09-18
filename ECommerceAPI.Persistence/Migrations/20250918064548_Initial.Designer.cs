@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ECommerceAPI.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250916135905_Initial")]
+    [Migration("20250918064548_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,21 +24,6 @@ namespace ECommerceAPI.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BasketProduct", b =>
-                {
-                    b.Property<int>("BasketsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("BasketsId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("BasketProducts", (string)null);
-                });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Address", b =>
                 {
@@ -111,6 +96,24 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Baskets");
+                });
+
+            modelBuilder.Entity("ECommerceAPI.Domain.Entities.BasketProduct", b =>
+                {
+                    b.Property<int>("BasketId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("BasketId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("BasketProduct");
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Category", b =>
@@ -678,21 +681,6 @@ namespace ECommerceAPI.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BasketProduct", b =>
-                {
-                    b.HasOne("ECommerceAPI.Domain.Entities.Basket", null)
-                        .WithMany()
-                        .HasForeignKey("BasketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ECommerceAPI.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Address", b =>
                 {
                     b.HasOne("ECommerceAPI.Domain.Entities.User", "User")
@@ -724,6 +712,25 @@ namespace ECommerceAPI.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ECommerceAPI.Domain.Entities.BasketProduct", b =>
+                {
+                    b.HasOne("ECommerceAPI.Domain.Entities.Basket", "Basket")
+                        .WithMany("BasketProducts")
+                        .HasForeignKey("BasketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerceAPI.Domain.Entities.Product", "Product")
+                        .WithMany("BasketProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Basket");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Order", b =>
@@ -870,6 +877,11 @@ namespace ECommerceAPI.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ECommerceAPI.Domain.Entities.Basket", b =>
+                {
+                    b.Navigation("BasketProducts");
+                });
+
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
@@ -884,6 +896,8 @@ namespace ECommerceAPI.Persistence.Migrations
 
             modelBuilder.Entity("ECommerceAPI.Domain.Entities.Product", b =>
                 {
+                    b.Navigation("BasketProducts");
+
                     b.Navigation("OrderProducts");
                 });
 
